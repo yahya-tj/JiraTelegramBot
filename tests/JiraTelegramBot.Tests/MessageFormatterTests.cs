@@ -17,21 +17,20 @@ public class MessageFormatterTests
     {
         var result = _formatter.Format([], [], Date);
 
-        Assert.Equal("✅ Нет задач на сегодня и просрочек.", result);
+        Assert.Equal("✅ Нет задач в спринте и просрочек.", result);
     }
 
     [Fact]
     public void Renders_both_sections_with_counts()
     {
-        var today = new[] { Issue("JIRA-1", "Задача сегодня") };
-        var overdue = new[] { Issue("JIRA-2", "Просрочка", "High", new DateOnly(2026, 7, 5)) };
+        var today = new[] { Issue("JIRA-1", "Задача в спринте") };
+        var overdue = new[] { Issue("JIRA-2", "Просрочка") };
 
         var result = _formatter.Format(today, overdue, Date);
 
         Assert.Contains("Задачи на 07.07.2026", result);
-        Assert.Contains("📅 <b>На сегодня (1)</b>", result);
-        Assert.Contains("⚠️ <b>Просрочено (1)</b>", result);
-        Assert.Contains("срок 05.07", result);
+        Assert.Contains("📅 <b>В текущем спринте (1)</b>", result);
+        Assert.Contains("⚠️ <b>Просрочено — из закрытых спринтов (1)</b>", result);
     }
 
     [Fact]
@@ -39,17 +38,17 @@ public class MessageFormatterTests
     {
         var result = _formatter.Format([Issue("JIRA-1", "X")], [], Date);
 
-        Assert.Contains("На сегодня (1)", result);
+        Assert.Contains("В текущем спринте (1)", result);
         Assert.DoesNotContain("Просрочено", result);
     }
 
     [Fact]
-    public void Only_overdue_omits_today_section()
+    public void Only_overdue_omits_sprint_section()
     {
         var result = _formatter.Format([], [Issue("JIRA-9", "Y")], Date);
 
-        Assert.Contains("Просрочено (1)", result);
-        Assert.DoesNotContain("На сегодня", result);
+        Assert.Contains("Просрочено", result);
+        Assert.DoesNotContain("В текущем спринте", result);
     }
 
     [Fact]

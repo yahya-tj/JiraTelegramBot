@@ -11,13 +11,16 @@ namespace JiraTelegramBot.Digest;
 /// </summary>
 public sealed class DailyDigestService
 {
+    // Задачи в активном спринте — то, чем занимаешься сейчас.
     private const string TodayJql =
         "assignee = currentUser() AND statusCategory != Done " +
-        "AND due = startOfDay() ORDER BY priority DESC";
+        "AND sprint in openSprints() ORDER BY priority DESC";
 
+    // Незавершённые задачи из уже закрытых спринтов, не перенесённые в активный —
+    // «провалившиеся» дедлайны спринта.
     private const string OverdueJql =
         "assignee = currentUser() AND statusCategory != Done " +
-        "AND due < startOfDay() ORDER BY due ASC";
+        "AND sprint in closedSprints() AND sprint not in openSprints() ORDER BY priority DESC";
 
     private readonly IJiraClient _jira;
     private readonly MessageFormatter _formatter;

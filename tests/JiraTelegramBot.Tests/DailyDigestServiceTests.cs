@@ -34,7 +34,7 @@ public class DailyDigestServiceTests
     }
 
     private static FakeJiraClient JiraWith(IReadOnlyList<JiraIssue> today, IReadOnlyList<JiraIssue> overdue)
-        => new(jql => jql.Contains("due =") ? today : overdue);
+        => new(jql => jql.Contains("closedSprints") ? overdue : today);
 
     [Fact]
     public async Task Sends_digest_with_both_sections()
@@ -45,8 +45,8 @@ public class DailyDigestServiceTests
         await service.RunAsync(CancellationToken.None);
 
         var message = Assert.Single(notifier.Sent);
-        Assert.Contains("На сегодня (1)", message);
-        Assert.Contains("Просрочено (1)", message);
+        Assert.Contains("В текущем спринте (1)", message);
+        Assert.Contains("Просрочено — из закрытых спринтов (1)", message);
         Assert.Contains("Задачи на 07.07.2026", message);
     }
 

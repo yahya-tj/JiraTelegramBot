@@ -1,10 +1,14 @@
 # Jira → Telegram: утренние уведомления о задачах
 
 .NET 10 Worker Service, который каждый день в **09:00 (Asia/Dushanbe)** присылает
-в Telegram сводку задач из **Jira Data Center**:
+в Telegram сводку задач из **Jira Data Center** (Scrum-процесс со спринтами):
 
-- 📅 **На сегодня** — задачи со сроком (due) на сегодня, ещё не закрытые;
-- ⚠️ **Просрочено** — задачи со сроком в прошлом, ещё не закрытые.
+- 📅 **В текущем спринте** — незакрытые задачи из активного спринта (`sprint in openSprints()`);
+- ⚠️ **Просрочено** — незакрытые задачи из уже закрытых спринтов, не перенесённые
+  в активный (`sprint in closedSprints() AND sprint not in openSprints()`).
+
+> Поле `Due Date` в этой Jira не заполняется, поэтому отбор построен на спринтах,
+> а не на сроке исполнения.
 
 Только исходящие уведомления: ни команд, ни кнопок. Дизайн — в
 [docs/superpowers/specs/2026-07-07-jira-telegram-bot-design.md](docs/superpowers/specs/2026-07-07-jira-telegram-bot-design.md).

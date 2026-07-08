@@ -23,7 +23,7 @@ public sealed class MessageFormatter
         DateOnly date)
     {
         if (today.Count == 0 && overdue.Count == 0)
-            return "✅ Нет задач на сегодня и просрочек.";
+            return "✅ Нет задач в спринте и просрочек.";
 
         var sb = new StringBuilder();
         sb.Append("🌅 <b>Доброе утро! Задачи на ")
@@ -32,29 +32,29 @@ public sealed class MessageFormatter
 
         if (today.Count > 0)
         {
-            sb.Append("\n\n📅 <b>На сегодня (").Append(today.Count).Append(")</b>");
+            sb.Append("\n\n📅 <b>В текущем спринте (").Append(today.Count).Append(")</b>");
             foreach (var issue in today)
-                sb.Append('\n').Append(FormatLine(issue, includeDue: false));
+                sb.Append('\n').Append(FormatLine(issue));
         }
 
         if (overdue.Count > 0)
         {
-            sb.Append("\n\n⚠️ <b>Просрочено (").Append(overdue.Count).Append(")</b>");
+            sb.Append("\n\n⚠️ <b>Просрочено — из закрытых спринтов (").Append(overdue.Count).Append(")</b>");
             foreach (var issue in overdue)
-                sb.Append('\n').Append(FormatLine(issue, includeDue: true));
+                sb.Append('\n').Append(FormatLine(issue));
         }
 
         return sb.ToString();
     }
 
-    private string FormatLine(JiraIssue issue, bool includeDue)
+    private string FormatLine(JiraIssue issue)
     {
         var sb = new StringBuilder();
         sb.Append(" • ").Append(Link(issue.Key))
           .Append(" — ").Append(Escape(issue.Summary));
 
-        if (includeDue && issue.DueDate is { } due)
-            sb.Append(" — срок ").Append(due.ToString("dd.MM", CultureInfo.InvariantCulture));
+        if (!string.IsNullOrWhiteSpace(issue.Status))
+            sb.Append(" — ").Append(Escape(issue.Status));
 
         if (!string.IsNullOrWhiteSpace(issue.Priority))
             sb.Append(" — ").Append(PriorityIcon(issue.Priority)).Append(' ').Append(Escape(issue.Priority));

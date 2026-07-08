@@ -72,17 +72,23 @@
 
 ## JQL
 
+> **Обновление (2026-07-08):** в реальной Jira банка поле `Due Date` не
+> заполняется (0 задач), работа ведётся по спринтам. Отбор переведён с `due`
+> на спринты. Ниже — актуальный вариант.
+
 ```
-Сегодня:    assignee = currentUser() AND statusCategory != Done
-            AND due = startOfDay() ORDER BY priority DESC
+В спринте:  assignee = currentUser() AND statusCategory != Done
+            AND sprint in openSprints() ORDER BY priority DESC
 
 Просрочено: assignee = currentUser() AND statusCategory != Done
-            AND due < startOfDay() ORDER BY due ASC
+            AND sprint in closedSprints() AND sprint not in openSprints()
+            ORDER BY priority DESC
 ```
 
 `fields`: `["summary","status","priority","duedate","issuetype"]`. `key`
 возвращается всегда. `statusCategory != Done` ловит все незакрытые статусы
-независимо от кастомного workflow.
+независимо от кастомного workflow. «Просрочено» = незавершённые задачи из уже
+закрытых спринтов, не перенесённые в активный.
 
 ## Формат сообщения (HTML)
 
