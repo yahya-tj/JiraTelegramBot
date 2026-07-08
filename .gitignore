@@ -1,0 +1,14 @@
+# .NET build output
+bin/
+obj/
+*.user
+
+# Rider / VS
+.idea/
+.vs/
+
+# Секреты и локальные настройки — НЕ коммитить
+appsettings.Development.json
+appsettings.Local.json
+*.env
+secrets.json

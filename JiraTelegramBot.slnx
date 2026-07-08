@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/JiraTelegramBot/JiraTelegramBot.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/JiraTelegramBot.Tests/JiraTelegramBot.Tests.csproj" />
+  </Folder>
+</Solution>
